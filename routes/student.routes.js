@@ -9,12 +9,12 @@ router.get('/', studentController.findAll);
 router.post('/', studentController.create);
 
 // Retrieve a single student with GR_Number
-router.get('/:gr_no', studentController.findById);
+router.get('/:grNumber', studentController.findById);
 
 // Update a student with GR_Number
-router.put('/:gr_no', studentController.update);
+router.put('/:grNumber', studentController.update);
 
 // Delete a student with GR_Number
-router.delete('/:gr_no', studentController.delete);
+router.delete('/:grNumber', studentController.delete);
 
 module.exports = router
