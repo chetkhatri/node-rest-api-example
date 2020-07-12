@@ -1,0 +1,5 @@
+npm install -g depcheck
+npm outdated
+npm view require-package-name time.modified
+npm install nsp —global
+nsp check

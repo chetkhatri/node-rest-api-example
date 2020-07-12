@@ -1,22 +1,55 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const session = require('express-session');
+const helmet = require('helmet');
 
 // create express app
 const app = express();
 
+
 // Setup server port
 const port = process.env.PORT || 5345;
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }))
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json())
 
-// define a root route
-app.get('/', (req, res) => {
-  res.send("Hello World");
-});
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(cookieParser());
+app.use(cors());
+
+app.use(session({
+  secret: 'positronx',
+  saveUninitialized: false,
+  resave: false,
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    maxAge: (2 * 60 * 1000) 
+  }
+}));
+
+// HTTP Strict Transport Security (HSTS) header
+app.use(helmet.hsts({
+  maxAge: 1000 * 60 * 60 * 24 * 365,
+  includeSubdomains: true,
+  preload: true
+}));
+
+// Content Security Policy (CSP) header
+
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'", "https"],
+    scriptSrc: ["'self'", "'unsafe-inline'"],
+    styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+    imgSrc: ["'self'", "https", "data:"],
+    fontSrc: ["'self'", "https", "https://fonts.gstatic.com", "data:"],
+    reportUri: '/report-violation',
+  }
+}));   
 
 // Require employee routes
 const studentRoutes = require('./routes/student.routes')
