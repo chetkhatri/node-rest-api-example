@@ -6,7 +6,7 @@ const studentController = require('../controllers/student.controller');
 
 const {validateStudent} = require('../validation/validator.js')
 
-var corsOptions = {
+const corsOptions = {
     origin: 'http://localhost:5345/',
     credentials: true,
     exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],

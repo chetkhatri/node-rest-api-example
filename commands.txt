@@ -3,3 +3,82 @@ npm outdated
 npm view require-package-name time.modified
 npm install nsp —global
 nsp check
+
+
+var sanitize = require('mongo-sanitize');
+ 
+app.post(‘/profile', function (req, res) {
+ 
+  var query = {
+    username: sanitize(req.body.username)
+  }
+ 
+  db.collection('users').findOne(query, function (err, user) {
+    // do something with the user
+  });
+});
+
+FUNCTION-LEVEL ACCESS CONTROLS
+
+adminRoutes.route("/api/admin/users")
+  .get(async function (req, res) {
+    try {
+      var users = User.find({}, "firstName lastName email") || [];
+      return res.json({users});
+    } catch (err) {
+      return res.status(500).send("There was an error listing users.");
+    }
+}); 
+
+As this route is currently defined, any user can make a request to this endpoint and see the list of users. We can perform an access control check to allow only authenticated users with a particular privilege to call this endpoint and retrieve the list of users:
+
+adminRoutes.route("/api/admin/users")
+  .get(async function (req, res) {
+    try {
+      var user = mongoose.model("User");
+      // The accessControl object handles our data access and checks that the
+      // user exists and that the user has the role ‘admin’ and
+      // also has the ‘view users’ privilege.
+      accessControl.check(user).is("admin").can("view users", function (err, results) {
+        if (!results) {
+          return res.sendStatus(404);
+        }
+        next();
+      });
+ 
+      var users = User.find({}, "firstName lastName email") || [];
+      return res.json({users});
+    } catch (err) {
+      return res.status(500).send("There was an error listing users.");
+    }
+});
+
+When implementing function-level access controls, it is easy to make mistakes -- such as forgetting to perform a check, or only checking for a role and not privilege. 
+
+In the previous example where we showed the access control check being implemented to restrict the viewing of users, we made a mistake by only performing the check in the get method of the route. If we only use one HTTP method, this will probably suffice. However, if we later need to add additional methods, we may forget to add the access control check.
+
+To handle this issue and future-proof our function-level access control check, we can instead call it in the all method, which will apply the check to any request using any method to this route.
+
+adminRoutes.route("/api/admin/users")
+  .all(async (req, res, next) => {
+    try {
+      var user = mongoose.model("User");
+      accessControl.check(user).is("admin").can("view users", function (err, results) {
+        if (!results) {
+          return res.sendStatus(404);
+        }
+        next();
+      });
+    } catch (err) {     
+      return res.sendStatus(404);
+    }
+  })
+  .get(async function (req, res) {
+    try {     
+      var users = User.find({}, "firstName lastName email") || [];
+      return res.json({users});
+    } catch (err) {
+      return res.status(500).send("There was an error listing users.");
+    }
+});
+
