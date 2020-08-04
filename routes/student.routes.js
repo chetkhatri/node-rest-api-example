@@ -5,6 +5,7 @@ const router = express.Router()
 const studentController = require('../controllers/student.controller');
 
 const {validateStudent} = require('../validation/validator.js')
+const { signIn, welcome, refresh } = require('../auth/handlers')
 
 const corsOptions = {
     origin: 'http://localhost:5345/',
@@ -14,16 +15,18 @@ const corsOptions = {
   }
 
 
+router.post('/signin', cors(corsOptions), signIn)
+router.get('/welcome', cors(corsOptions), welcome)
+router.post('/refresh', cors(corsOptions), refresh)
 
 // Retrieve all Students
 router.get('/', cors(corsOptions), studentController.findAll);
 
 // Create a new student
 router.post('/', cors(corsOptions), validateStudent, studentController.create);
-// router.route('/').post(validateStudent, studentController.create)
 
 // Retrieve a single student with GR_Number
-router.get('/:grNumber', cors(corsOptions), validateStudent, studentController.findById);
+router.get('/:grNumber', cors(corsOptions), studentController.findById);
 
 // Update a student with GR_Number
 router.put('/:grNumber', cors(corsOptions), studentController.update);
