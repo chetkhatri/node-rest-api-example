@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const fs = require('fs')
+const bcrypt = require('bcrypt')
 
 const PUBLIC_KEY = fs.readFileSync(__dirname + '/public_key.pem', 'utf8')
 const PRIVATE_KEY = fs.readFileSync(__dirname + '/private_key.pem', 'utf8')
@@ -7,19 +8,21 @@ const PRIVATE_KEY = fs.readFileSync(__dirname + '/private_key.pem', 'utf8')
 const jwtExpirySeconds = 300
 
 const users = {
-  user1: 'password1',
-  user2: 'password2'
+  user1: '$2b$12$nBsHay8/r0Ac9HdGXS.9q.v8Y4L0spoN7tmmWkzfVgISW5XJVjmyq',
+  user2: '$2b$12$kBAmYIAv490gBiOBt.Eqkew1x3BV6VUiqLjz4BvtxL8m579390/8y'
 }
+
+const saltRounds = 12;
 
 const signIn = (req, res) => {
   // Get credentials from JSON body
   const { username, password } = req.body
-  if (!username || !password || users[username] !== password) {
+  if (!username || !password || !bcrypt.compareSync(password, users[username])) {
     // return 401 error is username or password doesn't exist, or if password does
     // not match the password in our records
     return res.status(401).end()
   }
-
+  
   // Create a new token with the username in the payload
   // and which expires 300 seconds after issue
   const token = jwt.sign({ username }, PRIVATE_KEY, {
