@@ -1,5 +1,24 @@
 # node-rest-api-example
 
+
+## Changes in Configuation:
+
+1. Go to config/db.config.js
+
+Change below credentials accordingly
+
+```
+const dbConn = mysql.createConnection({
+  // please replace this with your hostname / IP Address
+  host     : 'localhost',
+  // Please replace this with your username
+  user     : 'root',
+  // Please replace this with your password
+  password : 'My@#$Password878',
+  database : 'school_db'
+});
+```
+
 > git checkout feature/auth-rsa
 
 Once you are into `feature/auth-rsa` branch, please do `npm install`.
