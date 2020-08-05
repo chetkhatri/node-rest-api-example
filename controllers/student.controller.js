@@ -3,7 +3,7 @@
 const Student = require('../models/student.model');
 const handler = require('../auth/handlers')
 const jwt = handler.jwt
-const jwtKey = handler.jwtKey
+const jwtKey = handler.PUBLIC_KEY
 const jwtExpirySeconds = handler.jwtExpirySeconds
 
 const authentication = function(req, res){
@@ -16,7 +16,7 @@ const authentication = function(req, res){
   
     var payload
     try {
-      payload = jwt.verify(token, jwtKey)
+      payload = jwt.verify(token, jwtKey, { algorithms: ['RS256'] })
       return 200
     } catch (e) {
       if (e instanceof jwt.JsonWebTokenError) {

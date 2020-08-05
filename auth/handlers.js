@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken')
+const fs = require('fs')
 
-const jwtKey = 'hChnEm_uMHY1X0G18l81PF7qtmniloFpHwBp2thWPhsXMbJocF-aBBQDXUDgbS9QR09DhnKx_l9R-b5uqQPSXBxC8J7t7c4cTAsOSoTafKi8eTvT7JYztgGuePRSHaGJ4HUnvPAEF45yigUjfGDKb4JXIoreDDz4vKcBukZEbGiE15XsNao4IRNdvt-vr7l--DD1cKbnRIVmouqL1uPZCI1acII9WWyZ-541e_I7ypERA9OL6Pn87MArK2wU9ZJPuIjJJnXLdLjPRyeBlYIRj4RX638T3pW7z8zrM7J7wn-EfKzSjGzhn3Ra-MCQhB3uADq0w0xweLnABeo75rrnhw'
+const PUBLIC_KEY = fs.readFileSync(__dirname + '/public_key.pem', 'utf8')
+const PRIVATE_KEY = fs.readFileSync(__dirname + '/private_key.pem', 'utf8')
+
 const jwtExpirySeconds = 300
 
 const users = {
@@ -19,8 +22,8 @@ const signIn = (req, res) => {
 
   // Create a new token with the username in the payload
   // and which expires 300 seconds after issue
-  const token = jwt.sign({ username }, jwtKey, {
-    algorithm: 'HS256',
+  const token = jwt.sign({ username }, PRIVATE_KEY, {
+    algorithm: 'RS256',
     expiresIn: jwtExpirySeconds
   })
   
@@ -46,7 +49,7 @@ const welcome = (req, res) => {
     // Note that we are passing the key in this method as well. This method will throw an error
     // if the token is invalid (if it has expired according to the expiry time we set on sign in),
     // or if the signature does not match
-    payload = jwt.verify(token, jwtKey)
+    payload = jwt.verify(token, PUBLIC_KEY, { algorithms: ['RS256'] })
   } catch (e) {
     if (e instanceof jwt.JsonWebTokenError) {
       // if the error thrown is because the JWT is unauthorized, return a 401 error
@@ -71,12 +74,12 @@ const refresh = (req, res) => {
 
   var payload
   try {
-      // payload = jwt.verify(token, jwtKey)
-    payload = jwt.verify(token, jwtKey, {
+  
+  payload = jwt.verify(token, PUBLIC_KEY, { 
       // Never forget to make this explicit to prevent
       // signature stripping attacks.
-      algorithms: ['RS256'],
-  });
+    algorithms: ['RS256'] })
+
   } catch (e) {
     if (e instanceof jwt.JsonWebTokenError) {
       return res.status(401).end()
@@ -94,8 +97,8 @@ const refresh = (req, res) => {
   }
 
   // Now, create a new token for the current user, with a renewed expiration time
-  const newToken = jwt.sign({ username: payload.username }, jwtKey, {
-    algorithm: 'HS256',
+  const newToken = jwt.sign({ username: payload.username }, PRIVATE_KEY, {
+    algorithm: 'RS256',
     expiresIn: jwtExpirySeconds
   })
 
@@ -109,7 +112,8 @@ module.exports = {
   welcome,
   refresh,
   jwt,
-  jwtKey,
+  PUBLIC_KEY,
   jwtExpirySeconds,
   users
+
 }
