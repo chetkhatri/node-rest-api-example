@@ -63,3 +63,10 @@ Body:
         "state": "Karnataka"
 }
 ```
+
+curl -X POST -H "Content-Type: application/json" \
+    -d '{"username":"user1","password":"password1"}' \
+    http://localhost:5345/api/v1/student/signin
+
+
+curl http://localhost:5345/api/v1/student/
