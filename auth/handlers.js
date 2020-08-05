@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-const jwtKey = 'my_secret_key'
+const jwtKey = 'hChnEm_uMHY1X0G18l81PF7qtmniloFpHwBp2thWPhsXMbJocF-aBBQDXUDgbS9QR09DhnKx_l9R-b5uqQPSXBxC8J7t7c4cTAsOSoTafKi8eTvT7JYztgGuePRSHaGJ4HUnvPAEF45yigUjfGDKb4JXIoreDDz4vKcBukZEbGiE15XsNao4IRNdvt-vr7l--DD1cKbnRIVmouqL1uPZCI1acII9WWyZ-541e_I7ypERA9OL6Pn87MArK2wU9ZJPuIjJJnXLdLjPRyeBlYIRj4RX638T3pW7z8zrM7J7wn-EfKzSjGzhn3Ra-MCQhB3uADq0w0xweLnABeo75rrnhw'
 const jwtExpirySeconds = 300
 
 const users = {
@@ -71,7 +71,12 @@ const refresh = (req, res) => {
 
   var payload
   try {
-    payload = jwt.verify(token, jwtKey)
+      // payload = jwt.verify(token, jwtKey)
+    payload = jwt.verify(token, jwtKey, {
+      // Never forget to make this explicit to prevent
+      // signature stripping attacks.
+      algorithms: ['RS256'],
+  });
   } catch (e) {
     if (e instanceof jwt.JsonWebTokenError) {
       return res.status(401).end()
