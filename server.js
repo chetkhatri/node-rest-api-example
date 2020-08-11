@@ -57,6 +57,33 @@ const studentRoutes = require('./routes/student.routes')
 // using as middleware
 app.use('/api/v1/student', studentRoutes)
 
+
+
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError) {
+    const error = {status: undefined, message: undefined, type: undefined, ...err}
+    if (error.status === 400 && 'body' in err) {
+      // res.status(400).json({ error: "Bad Request parameters!", message: error.message, type: error.type })
+      res.status(400).send("The body of your request is not a valid JSON!");
+    }
+  }
+});
+
+
+// error handler middleware
+app.use((error, req, res, next) => {
+  res.status(error.status || 500).send({
+    error: {
+      status: error.status || 500,
+      message: error.message || 'Internal Server Error',
+    },
+  });
+});
+
+app.get('*', function(req, res){
+  res.status(404).send("Resource Not found!")
+});
+
 // listen for requests
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
