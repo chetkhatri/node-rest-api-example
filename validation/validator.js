@@ -28,7 +28,7 @@ exports.validateStudent = [
   check('last_name').trim().escape().not().isEmpty().withMessage('Last Name can not be empty!')
     .bail().isAlpha().isLength({ min: 4, max: 15 }).bail(),
   check('standard').trim().escape().not().isEmpty().withMessage('Standard can not be empty!').bail()
-  .isNumeric().isLength({max:1}).withMessage('Standard can not be empty!').bail(),
+  .isNumeric().isLength({max:1}).withMessage('Standard can not be more than a single digit!').bail(),
  check('city').trim().escape().not().isEmpty().withMessage('City can not be empty!').bail()
  .isAlpha().withMessage('City must be alphabatic!').bail().isLength({min: 4, max: 15}).bail().withMessage('City length must be in 4-15 characters'),
  check('state').trim().escape().not().isEmpty().withMessage('State can not be empty!').bail()
@@ -41,3 +41,11 @@ exports.validateStudent = [
     next();
   },
 ];
+
+exports.validateStandard = [
+  check('standard').trim().escape().not().isEmpty().withMessage('Standard can not be empty!').bail()
+  .isNumeric().bail()
+  .withMessage('Standard can be digit only!').bail()
+  .isLength({max:1}).withMessage('Standard can be single digit only!').bail(),
+];
+

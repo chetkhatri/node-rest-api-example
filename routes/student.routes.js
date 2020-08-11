@@ -1,10 +1,11 @@
 const express = require('express')
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const router = express.Router()
 const studentController = require('../controllers/student.controller');
 
-const {validateStudent} = require('../validation/validator.js')
+const {validateStudent, validateStandard} = require('../validation/validator.js')
 const { signIn, welcome, refresh } = require('../auth/handlers')
 
 const corsOptions = {
@@ -29,7 +30,7 @@ router.post('/', cors(corsOptions), validateStudent, studentController.create);
 router.get('/:grNumber', cors(corsOptions), studentController.findById);
 
 // Update a student with GR_Number
-router.put('/:grNumber', cors(corsOptions), studentController.update);
+router.put('/:grNumber', cors(corsOptions), validateStandard, studentController.update);
 
 // Delete a student with GR_Number
 router.delete('/:grNumber', cors(corsOptions), studentController.delete);
