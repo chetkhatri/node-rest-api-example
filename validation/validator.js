@@ -8,16 +8,18 @@ exports.validateStudent = [
     .isEmpty()
     .withMessage('Student ID can not be empty!')
     .bail()
+    .isNumeric().withMessage('GR Number must be numberic').bail()
     .isLength({max: 2})
     .withMessage('Maximum 3 digits required!')
     .bail(),
-  check('gr_no')
+  check('grNumber')
     .trim()
     .escape()
     .not()
     .isEmpty()
     .withMessage('GR Number can not be empty!')
     .bail()
+    .isNumeric().withMessage('GR Number must be numberic').bail()
     .isLength({max: 4})
     .withMessage('Maximum 4 digits required!')
     .bail(),
@@ -47,5 +49,32 @@ exports.validateStandard = [
   .isNumeric().bail()
   .withMessage('Standard can be digit only!').bail()
   .isLength({max:1}).withMessage('Standard can be single digit only!').bail(),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(422).json({errors: errors.array()});
+    next();
+  },
 ];
 
+exports.validateGRNumber = [
+
+  check('grNumber')
+    .trim()
+    .escape()
+    .not()
+    .isEmpty()
+    .withMessage('GR Number can not be empty!')
+    .bail()
+    .isNumeric().withMessage('GR Number must be numberic').bail()
+    .isLength({max: 4})
+    .withMessage('Maximum 4 digits required!')
+    .bail(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(422).json({errors: errors.array()});
+    next();
+  },
+]

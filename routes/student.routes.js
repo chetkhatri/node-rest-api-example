@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const router = express.Router()
 const studentController = require('../controllers/student.controller');
 
-const {validateStudent, validateStandard} = require('../validation/validator.js')
+const {validateStudent, validateStandard, validateGRNumber} = require('../validation/validator.js')
 const { signIn, welcome, refresh } = require('../auth/handlers')
 
 const corsOptions = {
@@ -17,7 +17,6 @@ const corsOptions = {
 
 
 router.post('/signin', cors(corsOptions), signIn)
-router.get('/welcome', cors(corsOptions), welcome)
 router.post('/refresh', cors(corsOptions), refresh)
 
 // Retrieve all Students
@@ -27,12 +26,12 @@ router.get('/', cors(corsOptions), studentController.findAll);
 router.post('/', cors(corsOptions), validateStudent, studentController.create);
 
 // Retrieve a single student with GR_Number
-router.get('/:grNumber', cors(corsOptions), studentController.findById);
+router.get('/:grNumber', cors(corsOptions), validateGRNumber, studentController.findById);
 
 // Update a student with GR_Number
-router.put('/:grNumber', cors(corsOptions), validateStandard, studentController.update);
+router.put('/:grNumber', cors(corsOptions), validateGRNumber, studentController.update);
 
 // Delete a student with GR_Number
-router.delete('/:grNumber', cors(corsOptions), studentController.delete);
+router.delete('/:grNumber', cors(corsOptions), validateGRNumber, studentController.delete);
 
 module.exports = router

@@ -65,9 +65,12 @@ exports.create = function(req, res) {
         res.status(400).send({ error:true, message: 'Please provide all required field' });
     }else{
         Student.create(new_student, function(err, student) {
-            if (err)
-            res.send(err);
-            res.json({error:false,message:"Student added successfully!",data:student});
+            if(err == 400) {
+              res.status(400).json({ error: err.toString() })
+            } else {
+              res.json({error:false,message:"Student added successfully!",data:student});
+            }
+            
         });
     }
   }
@@ -86,10 +89,13 @@ exports.findById = function(req, res) {
   }
   else {
     Student.findById(req.params.grNumber, function(err, student) {
-        if (err)
-        res.send(err);
+
+      if(err == 400) {
+        res.status(400).json({ error: err.toString() })
+      } else {
         res.json(student);
-    });
+      }
+    })
   }
    
 };
@@ -108,9 +114,13 @@ exports.update = function(req, res) {
         res.status(400).send({ error:true, message: 'Please provide all required field' });
     }else{
         Student.update(req.params.grNumber, new Student(req.body), function(err, student) {
-            if (err)
-            res.send(err);
-            res.json({ error:false, message: 'Student successfully updated' });
+           
+            if(err == 400) {
+              res.status(400).json({ error: "Invalid request parameters" })
+            } else {
+              res.json({ error:false, message: 'Student successfully updated' });
+            }
+            
         });
     }
   }
@@ -127,10 +137,14 @@ exports.delete = function(req, res) {
   }
   else {
     Student.delete( req.params.grNumber, function(err, student) {
-        if (err)
-        res.send(err);
+
+      if(err == 400) {
+        res.status(400).json({ error: "Invalid request parameters" })
+      } else {
         res.json({ error:false, message: 'Student successfully deleted' });
-      });
+      }
+     
+    });
   }
     
 };
