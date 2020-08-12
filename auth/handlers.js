@@ -20,7 +20,7 @@ const signIn = (req, res) => {
   if (!username || !password || username !== users[username] ||!bcrypt.compareSync(password, users[username])) {
     // return 401 error is username or password doesn't exist, or if password does
     // not match the password in our records
-    return res.status(401).end()
+    return res.status(401).json({ error: "Authentication failed!" }).end()
   }
   
   // Create a new token with the username in the payload
