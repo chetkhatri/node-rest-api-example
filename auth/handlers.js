@@ -17,7 +17,7 @@ const saltRounds = 12;
 const signIn = (req, res) => {
   // Get credentials from JSON body
   const { username, password } = req.body
-  if (!username || !password || !bcrypt.compareSync(password, users[username])) {
+  if (!username || !password || username !== users[username] ||!bcrypt.compareSync(password, users[username])) {
     // return 401 error is username or password doesn't exist, or if password does
     // not match the password in our records
     return res.status(401).end()
