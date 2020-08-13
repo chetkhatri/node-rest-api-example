@@ -1,24 +1,23 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const cors = require('cors');
 const session = require('express-session');
 const helmet = require('helmet');
+const rateLimitMiddleware = require('./config/ratelimiter');
 
 // create express app
 const app = express();
-
+// Use Ratelimit Middleware
+app.use(rateLimitMiddleware);
 
 // Setup server port
 const port = process.env.PORT || 5345;
-
 // parse requests of content-type - application/json
 app.use(bodyParser.json())
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser());
-app.use(cors());
 
 app.use(session({
   secret: 'positronx',
@@ -31,6 +30,7 @@ app.use(session({
   }
 }));
 
+app.use(helmet());
 // HTTP Strict Transport Security (HSTS) header
 app.use(helmet.hsts({
   maxAge: 1000 * 60 * 60 * 24 * 365,

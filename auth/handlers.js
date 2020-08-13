@@ -17,7 +17,7 @@ const saltRounds = 12;
 const signIn = (req, res) => {
   // Get credentials from JSON body
   const { username, password } = req.body
-  if (!username || !password || username !== users[username] ||!bcrypt.compareSync(password, users[username])) {
+  if (!username || !password || !users[username] ||!bcrypt.compareSync(password, users[username])) {
     // return 401 error is username or password doesn't exist, or if password does
     // not match the password in our records
     return res.status(401).json({ error: "Authentication failed!" }).end()
@@ -32,7 +32,13 @@ const signIn = (req, res) => {
   
   // set the cookie as the token string, with a similar max age as the token
   // here, the max age is in milliseconds, so we multiply by 1000
-  res.cookie('token', token, { maxAge: jwtExpirySeconds * 1000 })
+
+  // Local Storage Anything that is stored in local storage is prone to XSS attack. 
+  // i.e. if there is an XSS vulnerability in the web pages then it is possible for malicious 
+  // websites to fetch data stored in local storage.
+  // it can store JWT in a response cookie with “httpOnly” and “secure” flag. Secure works with HTTPS - SSL
+  // Note: CSRF protection only needed if APIs are being integrated with the UI
+  res.cookie('token', token, {httpOnly: true, sameSite: true, maxAge: jwtExpirySeconds * 1000 })
   res.send("Authentication Successful!")
   res.end()
 }
@@ -106,7 +112,7 @@ const refresh = (req, res) => {
   })
 
   // Set the new token as the users `token` cookie
-  res.cookie('token', newToken, { maxAge: jwtExpirySeconds * 1000 })
+  res.cookie('token', newToken, { httpOnly: true, sameSite: true, maxAge: jwtExpirySeconds * 1000 })
   res.end()
 }
 

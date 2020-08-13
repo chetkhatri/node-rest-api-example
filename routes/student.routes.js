@@ -12,12 +12,13 @@ const corsOptions = {
     origin: 'http://localhost:5345/',
     credentials: true,
     exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    optionsSuccessStatus: 200
   }
 
 
-router.post('/signin', cors(corsOptions), signIn)
-router.post('/refresh', cors(corsOptions), refresh)
+  router.post('/signin', cors(corsOptions), signIn)
+  router.get('/welcome', cors(corsOptions), welcome)
+  router.post('/refresh', cors(corsOptions), refresh)
 
 // Retrieve all Students
 router.get('/', cors(corsOptions), studentController.findAll);
