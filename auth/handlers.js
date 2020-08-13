@@ -8,8 +8,8 @@ const PRIVATE_KEY = fs.readFileSync(__dirname + '/private_key.pem', 'utf8')
 const jwtExpirySeconds = 300
 
 const users = {
-  user1: '$2b$12$nBsHay8/r0Ac9HdGXS.9q.v8Y4L0spoN7tmmWkzfVgISW5XJVjmyq',
-  user2: '$2b$12$kBAmYIAv490gBiOBt.Eqkew1x3BV6VUiqLjz4BvtxL8m579390/8y'
+  user1: '$2b$12$5ED4vf2Hdh7ru2HX5sp35ep1T9Dg49NLXchOnquYTPWkGjUqLmfuS',
+  user2: '$2b$12$S8FVZ5LEpMYLOTwqxK1ZVepRFdNvuhAg9z96iXuEkVJJlrZLNpmEG'
 }
 
 const saltRounds = 12;
