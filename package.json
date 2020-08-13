@@ -20,7 +20,8 @@
     "helmet": "^3.23.3",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
-    "rate-limiter-flexible": "^2.1.10"
+    "rate-limiter-flexible": "^2.1.10",
+    "speakeasy": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
